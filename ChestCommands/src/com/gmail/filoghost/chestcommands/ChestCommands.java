@@ -9,6 +9,8 @@ import java.util.Set;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.configuration.InvalidConfigurationException;
+import org.bukkit.entity.Player;
+import org.bukkit.inventory.InventoryView;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.mcstats.MetricsLite;
 
@@ -25,6 +27,7 @@ import com.gmail.filoghost.chestcommands.config.yaml.PluginConfig;
 import com.gmail.filoghost.chestcommands.internal.BoundItem;
 import com.gmail.filoghost.chestcommands.internal.ExtendedIconMenu;
 import com.gmail.filoghost.chestcommands.internal.MenuData;
+import com.gmail.filoghost.chestcommands.internal.MenuInventoryHolder;
 import com.gmail.filoghost.chestcommands.listener.CommandListener;
 import com.gmail.filoghost.chestcommands.listener.InventoryListener;
 import com.gmail.filoghost.chestcommands.listener.JoinListener;
@@ -37,6 +40,7 @@ import com.gmail.filoghost.chestcommands.task.RefreshMenusTask;
 import com.gmail.filoghost.chestcommands.util.CaseInsensitiveMap;
 import com.gmail.filoghost.chestcommands.util.ErrorLogger;
 import com.gmail.filoghost.chestcommands.util.Utils;
+import com.gmail.filoghost.chestcommands.util.VersionUtils;
 
 public class ChestCommands extends JavaPlugin {
 	
@@ -127,6 +131,10 @@ public class ChestCommands extends JavaPlugin {
 		}
 		
 		Bukkit.getScheduler().scheduleSyncRepeatingTask(this, new RefreshMenusTask(), 2L, 2L);
+	}
+	
+	public void onDisable() {
+		closeChestMenus(); // Closes all open menus on reload/disable to prevent exploits.
 	}
 	
 	public void load(ErrorLogger errorLogger) {
@@ -250,6 +258,19 @@ public class ChestCommands extends JavaPlugin {
 			}
 		}
 		return list;
+	}
+	
+	public static void closeChestMenus() {
+		for (Player player : VersionUtils.getOnlinePlayers()) {
+			
+			InventoryView inventory = player.getOpenInventory();
+			
+			if (inventory != null) {
+				if (inventory.getTopInventory().getHolder() instanceof MenuInventoryHolder || inventory.getBottomInventory().getHolder() instanceof MenuInventoryHolder) {
+					player.closeInventory();
+				}
+			}
+		}
 	}
 	
 	public static ChestCommands getInstance() {

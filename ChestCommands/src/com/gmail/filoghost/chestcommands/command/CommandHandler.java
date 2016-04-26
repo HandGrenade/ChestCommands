@@ -47,13 +47,7 @@ public class CommandHandler extends CommandFramework {
 		if (args[0].equalsIgnoreCase("reload")) {
 			CommandValidate.isTrue(sender.hasPermission(Permissions.COMMAND_BASE + "reload"), "You don't have permission.");
 			
-			for (Player player : VersionUtils.getOnlinePlayers()) {
-				if (player.getOpenInventory() != null) {
-					if (player.getOpenInventory().getTopInventory().getHolder() instanceof MenuInventoryHolder || player.getOpenInventory().getBottomInventory().getHolder() instanceof MenuInventoryHolder) {
-						player.closeInventory();
-					}
-				}
-			}
+			ChestCommands.closeChestMenus();
 			
 			ErrorLogger errorLogger = new ErrorLogger();
 			ChestCommands.getInstance().load(errorLogger);
