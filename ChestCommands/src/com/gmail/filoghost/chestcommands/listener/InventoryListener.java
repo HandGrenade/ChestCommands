@@ -7,7 +7,9 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
+import org.bukkit.event.Event.Result;
 import org.bukkit.event.block.Action;
+import org.bukkit.event.inventory.InventoryAction;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
@@ -48,7 +50,13 @@ public class InventoryListener implements Listener {
 			IconMenu menu = ((MenuInventoryHolder) event.getInventory().getHolder()).getIconMenu();
 			int slot = event.getRawSlot();
 			
-			if (slot >= 0 && slot < menu.getSize()) {
+			// Fixes issues with Forge Mods interacting with the menu and possible unwanted exploits *cough* invtweaks *cough* ;)
+			if (event.getAction() == InventoryAction.NOTHING || event.getAction() == InventoryAction.UNKNOWN) {
+				event.setCancelled(true);
+				event.setResult(Result.DENY);
+				return;
+			}
+			else if (slot >= 0 && slot < menu.getSize()) {
 				
 				Icon icon = menu.getIconRaw(slot);
 				
