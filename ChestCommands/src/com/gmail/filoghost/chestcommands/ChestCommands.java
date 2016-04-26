@@ -15,6 +15,7 @@ import org.bukkit.plugin.java.JavaPlugin;
 import org.mcstats.MetricsLite;
 
 import com.gmail.filoghost.chestcommands.SimpleUpdater.ResponseHandler;
+import com.gmail.filoghost.chestcommands.bridge.AutoRankBridge;
 import com.gmail.filoghost.chestcommands.bridge.BarAPIBridge;
 import com.gmail.filoghost.chestcommands.bridge.EconomyBridge;
 import com.gmail.filoghost.chestcommands.bridge.PlayerPointsBridge;
@@ -85,6 +86,10 @@ public class ChestCommands extends JavaPlugin {
 		
 		if (PlayerPointsBridge.setupPlugin()) {
 			getLogger().info("Hooked PlayerPoints");
+		}
+		
+		if (AutoRankBridge.setupPlugin()) {
+			getLogger().info("Hooked AutoRank");
 		}
 		
 		AttributeRemover.setup();
